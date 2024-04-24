@@ -5,6 +5,7 @@ import { AppModule } from '~/modules/app.module';
 import { join } from 'path';
 import * as express from 'express';
 import { useSwagger } from './swagger/useSwagger';
+import { existsSync, mkdirSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,10 @@ async function bootstrap() {
 
   app.enableCors();
   app.setGlobalPrefix('api/v1');
+
+  if (!existsSync(STATIC_DIR)) {
+    mkdirSync(STATIC_DIR, { recursive: true });
+  }
 
   app.use('/files', express.static(join(__dirname, '..', STATIC_DIR)));
 
